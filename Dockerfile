@@ -9,7 +9,7 @@ RUN mkdir /output
 RUN cp $(swift build -c release -Xswiftc -g --show-bin-path)/SincereAuthServer /output/SincereAuthServer
 RUN cp -R ./Resources /output/Resources
 
-FROM index.docker.io/library/swift:5.7-jammy-slim as production
+FROM index.docker.io/library/swift:5.9-jammy-slim as production
 RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app vapor
 RUN apt-get update && apt-get install -y curl
 WORKDIR /app
