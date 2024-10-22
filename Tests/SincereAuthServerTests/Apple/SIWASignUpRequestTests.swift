@@ -35,7 +35,8 @@ final class SIWASignUpRequestTests: XCTestCase {
         "authorizationCode": "abcde",
         "deviceName": "iPhone",
         "firstName": "Nimesh",
-        "lastName": "Patel"
+        "lastName": "Patel",
+        "bundleId": "com.fullqueuedeveloper"
       }
     """
     
