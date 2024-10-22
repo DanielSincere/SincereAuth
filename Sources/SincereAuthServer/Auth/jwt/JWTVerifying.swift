@@ -8,6 +8,4 @@ protocol JWTVerifying {
       where Payload: JWTPayload
 }
 
-extension JWTSigners: JWTVerifying {
-
-}
+extension JWTSigners: JWTVerifying { }

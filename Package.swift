@@ -12,10 +12,10 @@ let package = Package(
   ],
   dependencies: [
 
-    .package(url: "https://github.com/DanielSincere/SincereAuthMiddleware.git", from: "0.3.0"),
+    .package(url: "https://github.com/DanielSincere/SincereAuthMiddleware.git", from: "0.3.1"),
 
-    .package(url: "https://github.com/vapor/vapor.git", from: "4.65.1"),
-    .package(url: "https://github.com/vapor/jwt.git", from: "4.2.1"),
+    .package(url: "https://github.com/vapor/vapor.git", from: "4.106.0"),
+    .package(url: "https://github.com/vapor/jwt.git", from: "4.2.2"),
 
     .package(url: "https://github.com/vapor/fluent.git", from: "4.3.1"),
     .package(url: "https://github.com/vapor/fluent-postgres-driver.git", from: "2.1.3"),

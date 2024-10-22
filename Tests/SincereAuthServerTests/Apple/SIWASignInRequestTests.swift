@@ -51,6 +51,7 @@ final class SIWASignInRequestTests: XCTestCase {
         "appleIdentityToken": "FakeToken",
         "authorizationCode": "abcde",
         "deviceName": "iPhone",
+        "bundleId": "com.fullqueuedeveloper.FQAuth"
       }
     """
     

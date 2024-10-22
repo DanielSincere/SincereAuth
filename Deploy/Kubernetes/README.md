@@ -16,14 +16,15 @@ Deployment guide for SincereAuth on Digital Ocean Kubernetes
 2. Gather the other environment variables as discussed in `Sources/SincereAuthServer/EnvVars.swift`, and store them in the secrets file. Rename 1-sincereauth-secrets.sample.yml to 1-sincereauth-secrets.yml.
 
   1. APPLE_APP_ID
-  2. APPLE_SERVICES_KEY
-  3. APPLE_SERVICES_KEY_ID
-  4. APPLE_TEAM_ID
-  5. AUTH_PRIVATE_KEY
-  6. DB_SYMMETRIC_KEY
-  7. DATABASE_URL
-  8. REDIS_URL
-  9. SELF_ISSUER_ID
+  2. ADDITIONAL_APPLE_APP_IDS
+  3. APPLE_SERVICES_KEY
+  4. APPLE_SERVICES_KEY_ID
+  5. APPLE_TEAM_ID
+  6. AUTH_PRIVATE_KEY
+  7. DB_SYMMETRIC_KEY
+  8. DATABASE_URL
+  9. REDIS_URL
+ 10. SELF_ISSUER_ID
 
 3. Deploy the App
 

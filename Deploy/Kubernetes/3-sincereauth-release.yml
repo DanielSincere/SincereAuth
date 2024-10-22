@@ -53,6 +53,11 @@ spec:
                 secretKeyRef:
                   name: sincereauth.secrets
                   key: APPLE_APP_ID
+            - name: ADDITIONAL_APPLE_APP_IDS
+              valueFrom:
+                secretKeyRef:
+                  name: sincereauth.secrets
+                  key: ADDITIONAL_APPLE_APP_IDS
             - name: DB_SYMMETRIC_KEY
               valueFrom:
                 secretKeyRef:

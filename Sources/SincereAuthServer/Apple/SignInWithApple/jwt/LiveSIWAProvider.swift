@@ -14,7 +14,7 @@ struct LiveSIWAVerifier: SIWAVerifier {
     self.apple = request.jwt.apple
   }
   
-  func verify(_ string: String) -> EventLoopFuture<AppleIdentityToken> {
-    apple.verify(string)
+  func verify(_ string: String, bundleId: String) -> EventLoopFuture<AppleIdentityToken> {
+    self.apple.verify(string, applicationIdentifier: bundleId)
   }
 }

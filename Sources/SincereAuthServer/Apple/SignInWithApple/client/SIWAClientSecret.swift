@@ -1,7 +1,6 @@
 import JWT
 import Foundation
 
-
 struct SIWAClientSecret: JWTPayload {
   let iss: IssuerClaim
   let iat: IssuedAtClaim
