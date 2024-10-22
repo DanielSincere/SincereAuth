@@ -9,7 +9,7 @@ struct FakeSIWAVerifier: SIWAVerifier, SIWAVerifierProvider {
   struct StubMissing: Error { }
   
   var verifyStub: AppleIdentityToken?
-  func verify(_ string: String) -> NIOCore.EventLoopFuture<JWTKit.AppleIdentityToken> {
+  func verify(_ string: String, bundleId: String) -> NIOCore.EventLoopFuture<JWTKit.AppleIdentityToken> {
     guard let stub = verifyStub else {
       return eventLoop.makeFailedFuture(StubMissing())
     }
