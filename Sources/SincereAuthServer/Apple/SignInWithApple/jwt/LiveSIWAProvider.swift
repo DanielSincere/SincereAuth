@@ -15,6 +15,6 @@ struct LiveSIWAVerifier: SIWAVerifier {
   }
   
   func verify(_ string: String) -> EventLoopFuture<AppleIdentityToken> {
-    apple.verify(string)
+    self.apple.verify(string)
   }
 }

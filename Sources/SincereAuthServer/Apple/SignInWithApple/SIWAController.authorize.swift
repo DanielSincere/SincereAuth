@@ -50,7 +50,7 @@ extension SIWAController {
     
     return eventLoop.makeFailedFuture(Abort(.badRequest,
                                             headers: HTTPHeaders(),
-                                            reason: "Email missing from Apple token",
+                                            reason: "Email missing from Apple token. Visit https://appleid.apple.com and sign out of our app. Then try again.",
                                             identifier: "email.missing",
                                             suggestedFixes: ["Visit https://appleid.apple.com and sign out of our app. Then try again."]))
   }
@@ -86,7 +86,7 @@ extension SIWAController {
               let lastName = authorizeBody.lastName else {
           return request.eventLoop.makeFailedFuture(Abort(.badRequest,
                                                           headers: HTTPHeaders(),
-                                                          reason: "Name missing",
+                                                          reason: "Name missing. Visit https://appleid.apple.com and sign out of our app. Then try again.",
                                                           identifier: "name.missing",
                                                           suggestedFixes: ["Visit https://appleid.apple.com and sign out of our app. Then try again."]))
         }
