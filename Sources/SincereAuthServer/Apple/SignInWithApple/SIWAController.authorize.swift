@@ -6,40 +6,54 @@ extension SIWAController {
   struct AuthorizeBody: Content {
     let appleIdentityToken: String
     let authorizationCode: String
+    let bundleId: String
     let deviceName: String
     let firstName: String?
     let lastName: String?
   }
   
+  struct UnknownBundleIdError: LocalizedError {
+    var errorDescription: String? {
+      "Unknown bundle ID is not supported by this server. Please see documentation if you're the dev"
+    }
+  }
+  
   func authorize(request: Request) -> EventLoopFuture<AuthResponse> {
     
     return AuthorizeBody.decodeRequest(request)
+      .guard({ body in
+        let maybeAdditionalBundleIdsString: String = (try? EnvVars.additionalAppleAppIds.load()) ?? ""
+        let additionalIds: [String] = maybeAdditionalBundleIdsString.split(separator: " ").map(String.init)
+        let allValidIds = additionalIds + [EnvVars.appleAppId.loadOrFatal()]
+        return allValidIds.contains(body.bundleId)
+      }, else: UnknownBundleIdError())
       .flatMap { authorizeBody in
         let verifier = request.services.siwaVerifier
-        return verifier.verify(authorizeBody.appleIdentityToken)
-          .flatMap { (appleIdentityToken: AppleIdentityToken) in
-            return request.services.siwaClient
-              .generateRefreshToken(code: authorizeBody.authorizationCode)
-              .flatMap { appleTokenResponse in
-                return UserModel.findByAppleUserId(appleIdentityToken.subject.value, db: request.db)
-                  .flatMap { maybeUser in
-                    if let userModel = maybeUser {
-                      return self.signIn(
-                        authorizeBody: authorizeBody,
-                        userModel: userModel,
-                        appleIdentityToken: appleIdentityToken,
-                        appleTokenResponse: appleTokenResponse,
-                        request: request)
-                    } else {
-                      return self.signUp(
-                        authorizeBody: authorizeBody,
-                        appleIdentityToken: appleIdentityToken,
-                        appleTokenResponse: appleTokenResponse,
-                        request: request)
-                    }
+        return verifier.verify(authorizeBody.appleIdentityToken,
+                               bundleId: authorizeBody.bundleId)
+        .flatMap { (appleIdentityToken: AppleIdentityToken) in
+          return request.services.siwaClient
+            .generateRefreshToken(code: authorizeBody.authorizationCode)
+            .flatMap { appleTokenResponse in
+              return UserModel.findByAppleUserId(appleIdentityToken.subject.value, db: request.db)
+                .flatMap { maybeUser in
+                  if let userModel = maybeUser {
+                    return self.signIn(
+                      authorizeBody: authorizeBody,
+                      userModel: userModel,
+                      appleIdentityToken: appleIdentityToken,
+                      appleTokenResponse: appleTokenResponse,
+                      request: request)
+                  } else {
+                    return self.signUp(
+                      authorizeBody: authorizeBody,
+                      appleIdentityToken: appleIdentityToken,
+                      appleTokenResponse: appleTokenResponse,
+                      request: request)
                   }
-              }
-          }
+                }
+            }
+        }
       }
   }
   
