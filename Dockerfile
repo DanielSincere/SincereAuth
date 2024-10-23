@@ -19,6 +19,7 @@ COPY --from=builder /usr/lib/swift/ /usr/lib/swift/
 FROM production as web
 ENV PORT 80
 EXPOSE $PORT
+COPY ./Resources ./Resources
 CMD /app/SincereAuthServer serve --env production --hostname 0.0.0.0 -p $PORT
 
 FROM production as queues
