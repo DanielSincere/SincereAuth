@@ -32,7 +32,8 @@ final class SIWASignUpRepoTests: XCTestCase {
                                        deviceName: "device",
                                        roles: ["test", "sample"],
                                        method: .siwa(appleUserId: "AppleUserId",
-                                                     appleRefreshToken: "AppleRefresh")
+                                                     appleRefreshToken: "AppleRefresh",
+                                                     appId: "com.fullqueuedeveloper.FQAuth")
                                       )).wait()
     
     let siwa = try XCTUnwrap(SIWAModel.findBy(appleUserId: "AppleUserId", db: self.db).wait())

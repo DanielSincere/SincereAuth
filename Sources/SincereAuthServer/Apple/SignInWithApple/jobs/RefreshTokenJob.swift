@@ -37,7 +37,7 @@ struct RefreshTokenJob: AsyncJob {
     siwa.attemptedRefreshAt = now
     try await siwa.save(on: db)
 
-    let tokenResult = try await client.validateRefreshToken(token: refreshToken).get()
+    let tokenResult = try await client.validateRefreshToken(token: refreshToken, appId: siwa.appId).get()
 
     switch tokenResult {
     case .decoded(let success):

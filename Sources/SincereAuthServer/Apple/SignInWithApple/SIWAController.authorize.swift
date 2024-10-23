@@ -33,7 +33,7 @@ extension SIWAController {
                                bundleId: authorizeBody.bundleId)
         .flatMap { (appleIdentityToken: AppleIdentityToken) in
           return request.services.siwaClient
-            .generateRefreshToken(code: authorizeBody.authorizationCode)
+            .generateRefreshToken(code: authorizeBody.authorizationCode, appId: authorizeBody.bundleId)
             .flatMap { appleTokenResponse in
               return UserModel.findByAppleUserId(appleIdentityToken.subject.value, db: request.db)
                 .flatMap { maybeUser in
@@ -113,7 +113,8 @@ extension SIWAController {
                         roles: [],
                         method: .siwa(
                           appleUserId: appleIdentityToken.subject.value,
-                          appleRefreshToken: appleTokenResponse.refresh_token)
+                          appleRefreshToken: appleTokenResponse.refresh_token,
+                          appId: authorizeBody.bundleId)
                        ))
           .flatMap { userId in
             AuthHelper(request: request)

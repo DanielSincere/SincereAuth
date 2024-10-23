@@ -69,3 +69,13 @@ spec:
                 secretKeyRef:
                   name: sincereauth.secrets
                   key: DB_SYMMETRIC_KEY
+            - name: WEBSITE_APPLE_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sincereauth.secrets
+                  key: WEBSITE_APPLE_APP_ID
+            - name: WEBSITE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: sincereauth.secrets
+                  key: WEBSITE_URL

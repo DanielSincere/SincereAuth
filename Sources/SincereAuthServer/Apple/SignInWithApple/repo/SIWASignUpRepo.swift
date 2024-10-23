@@ -14,7 +14,7 @@ struct SIWASignUpRepo {
   }
   
   enum Method {
-    case siwa(appleUserId: String, appleRefreshToken: String)
+    case siwa(appleUserId: String, appleRefreshToken: String, appId: String)
     
     var id: UserModel.RegistrationMethod {
       switch self {
@@ -49,7 +49,7 @@ struct SIWASignUpRepo {
   func signUp(_ params: Params) -> EventLoopFuture<UserModel.IDValue> {
 
     switch params.method {
-    case .siwa(appleUserId: let appleUserId, appleRefreshToken: let appleRefreshToken):
+    case .siwa(appleUserId: let appleUserId, appleRefreshToken: let appleRefreshToken, let appId):
 
       let sqlTemplate = """
         WITH new_user as (
@@ -57,8 +57,13 @@ struct SIWASignUpRepo {
           VALUES ($1, $2, $3::user_registration_method, $4::text[])
           RETURNING id AS user_id
         )
-        INSERT INTO "siwa" (email, apple_user_id, encrypted_apple_refresh_token, user_id)
-        VALUES ($5,$6,$7,(SELECT user_id FROM new_user))
+        INSERT INTO "siwa" (
+          email, 
+          apple_user_id, 
+          app_id, 
+          encrypted_apple_refresh_token, 
+          user_id)
+        VALUES ($5,$6,$7,$8,(SELECT user_id FROM new_user))
         RETURNING user_id AS user_id;
         """
       
@@ -69,6 +74,7 @@ struct SIWASignUpRepo {
         params.roles,
         params.email,
         appleUserId,
+        appId,
         DBSeal().seal(string: appleRefreshToken)
       ]
       

@@ -16,7 +16,8 @@ extension SIWASignUpRepo {
      roles: ["test", "sample"],
      method: .siwa(
        appleUserId: appleUserId,
-       appleRefreshToken: "fakeToken"))
+       appleRefreshToken: "fakeToken",
+       appId: "com.fullqueuedeveloper.FQAuth"))
 
     return try self.signUp(params).wait()
   }

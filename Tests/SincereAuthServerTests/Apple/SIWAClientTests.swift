@@ -34,7 +34,7 @@ final class SIWAClientTests: XCTestCase {
                                     client: httpClient,
                                     logger: app.logger)
     
-    let _ = try siwaClient.generateRefreshToken(code: "code123").wait()
+    let _ = try siwaClient.generateRefreshToken(code: "code123", appId: try EnvVars.appleAppId.load()).wait()
     
     let request: ClientRequest = try XCTUnwrap(httpClient.receivedRequest)
     XCTAssertEqual(request.url.string, "https://appleid.apple.com/auth/token")
