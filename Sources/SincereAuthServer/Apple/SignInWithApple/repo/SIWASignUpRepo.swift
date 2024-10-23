@@ -57,8 +57,13 @@ struct SIWASignUpRepo {
           VALUES ($1, $2, $3::user_registration_method, $4::text[])
           RETURNING id AS user_id
         )
-        INSERT INTO "siwa" (email, apple_user_id, app_id, encrypted_apple_refresh_token, user_id)
-        VALUES ($5,$6,$7,(SELECT user_id FROM new_user))
+        INSERT INTO "siwa" (
+          email, 
+          apple_user_id, 
+          app_id, 
+          encrypted_apple_refresh_token, 
+          user_id)
+        VALUES ($5,$6,$7,$8,(SELECT user_id FROM new_user))
         RETURNING user_id AS user_id;
         """
       
