@@ -24,7 +24,8 @@ final class SIWASignInRequestTests: XCTestCase {
                                              deviceName: "iPhone",
                                              roles: [],
                                              method: .siwa(appleUserId: existingAppleID,
-                                                           appleRefreshToken: "AppleRefreshToken"))
+                                                           appleRefreshToken: "AppleRefreshToken",
+                                                           appId: "com.fullqueuedeveloper.FQAuth"))
     
     self.existingUserID = try SIWASignUpRepo(application: app).signUp(signUpParams)
       .wait()
