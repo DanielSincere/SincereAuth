@@ -31,10 +31,6 @@ struct SIWAClientSecret: JWTPayload {
     guard try EnvVars.appleTeamId.load() == self.iss.value else {
       throw Errors.issuerMismatch(actual: self.iss.value)
     }
-    
-    guard try EnvVars.appleAppId.load() == self.sub.value else {
-      throw Errors.subjectMismatch(actual: self.sub.value)
-    }
   }
   
   enum Errors: Error, LocalizedError {

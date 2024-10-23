@@ -17,6 +17,9 @@ final class SIWAModel: Model {
 
   @Field(key: "apple_user_id")
   var appleUserId: String
+  
+  @Field(key: "app_id")
+  var appId: String
 
   @Field(key: "encrypted_apple_refresh_token")
   var encryptedAppleRefreshToken: String?

@@ -3,8 +3,8 @@ import JWTKit
 
 public protocol SIWAClient {
   func `for`(_ request: Request) -> SIWAClient
-  func validateRefreshToken(token: String) -> EventLoopFuture<AppleResponse<AppleTokenRefreshResponse>>
-  func generateRefreshToken(code: String) -> EventLoopFuture<AppleTokenResponse>
+  func validateRefreshToken(token: String, appId: String) -> EventLoopFuture<AppleResponse<AppleTokenRefreshResponse>>
+  func generateRefreshToken(code: String, appId: String) -> EventLoopFuture<AppleTokenResponse>
 }
 
 public struct LiveSIWAClient: SIWAClient {
@@ -40,13 +40,9 @@ public struct LiveSIWAClient: SIWAClient {
     client.eventLoop
   }
 
-  var clientId: String {
-    EnvVars.appleAppId.loadOrFatal()
-  }
-
-  var clientSecret: EventLoopFuture<String> {
+  func clientSecret(appId: String) -> EventLoopFuture<String> {
     do {
-      let payload = SIWAClientSecret(clientId: try EnvVars.appleAppId.load(),
+      let payload = SIWAClientSecret(clientId: appId,
                                      teamId: try EnvVars.appleTeamId.load())
       let string = try signers.sign(payload, kid: .appleServicesKey)
       return eventLoop.makeSucceededFuture(string)
@@ -56,10 +52,10 @@ public struct LiveSIWAClient: SIWAClient {
     }
   }
   
-  public func validateRefreshToken(token: String) -> EventLoopFuture<AppleResponse<AppleTokenRefreshResponse>> {
-    self.clientSecret
+  public func validateRefreshToken(token: String, appId: String) -> EventLoopFuture<AppleResponse<AppleTokenRefreshResponse>> {
+    self.clientSecret(appId: appId)
       .flatMap { clientSecret in
-        let body = AppleAuthTokenBody(client_id: self.clientId,
+        let body = AppleAuthTokenBody(client_id: appId,
                                       client_secret: clientSecret,
                                       code: nil,
                                       grant_type: "refresh_token",
@@ -70,10 +66,10 @@ public struct LiveSIWAClient: SIWAClient {
       }
   }
 
-  public func generateRefreshToken(code: String) -> EventLoopFuture<AppleTokenResponse> {
-    self.clientSecret
+  public func generateRefreshToken(code: String, appId: String) -> EventLoopFuture<AppleTokenResponse> {
+    self.clientSecret(appId: appId)
       .flatMap { clientSecret in
-        let body = AppleAuthTokenBody(client_id: self.clientId,
+        let body = AppleAuthTokenBody(client_id: appId,
                                       client_secret: clientSecret,
                                       code: code,
                                       grant_type: "authorization_code",
