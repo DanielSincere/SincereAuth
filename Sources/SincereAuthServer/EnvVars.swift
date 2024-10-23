@@ -19,6 +19,12 @@ enum EnvVars: String, CaseIterable {
   case appleAppId = "APPLE_APP_ID"
   /// App Store Connect App Bundle IDs for secondary apps in your app group, delimited by spaces
   case additionalAppleAppIds = "ADDITIONAL_APPLE_APP_IDS"
+  
+  /// App Store Connect App ID for the web portal
+  case websiteAppleAppId = "WEBSITE_APPLE_APP_ID"
+  
+  /// web portal URL. Perhaps "account.example.com"
+  case websiteURL = "WEBSITE_URL"
 
   /// generate with `spx generate-db-key`
   case dbSymmetricKey = "DB_SYMMETRIC_KEY"

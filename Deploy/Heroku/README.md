@@ -24,6 +24,8 @@ Install heroku cli tool from Homebrew
 - `RUN_SCHEDULED_QUEUES_IN_MAIN_PROCESS` - When limited in number of process, you may run the scheduled queues in-process by setting this variable to `YES`. If you can only run one extra process, prioritize the regular queues variable (the other one).
 - `RUN_QUEUES_IN_MAIN_PROCESS` - When limited in number of process, you may run the queues in-process by setting this variable to `YES`. If you can only run one extra process, prioritize the regular queues variable (this one).
 - `RUN_AUTO_MIGRATE` - When limited in number of process, you may run the database in-process by setting this variable to `YES`. This is only safe when you are only running 1 replica of the main app process.
+- `WEBSITE_APPLE_APP_ID` - Apple Services ID for the web login portal. e.g. com.fullqueuedeveloper.Website
+- `WEBSITE_URL` - URL for the web portal. Used to configure Sign in with Apple redirects. e.g. account.fullqueuedeveloper.com
 
 5. Clone the SincereAuth repo to your local computer
 6. Choose container stack `heroku stack:set -a sincereauth-server-{name} container` (app name is from step 2)
