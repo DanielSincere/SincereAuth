@@ -2,7 +2,7 @@ import FluentPostgresDriver
 
 final class AddAppIdToSiwaMigration: PostgresScriptMigration {
   let up = [
-    #"ALTER TABLE "siwa" ADD COLUMN app_id TEXT NOT NULL,"#
+    #"ALTER TABLE "siwa" ADD COLUMN app_id TEXT NOT NULL"#
   ]
   
   let down = [
