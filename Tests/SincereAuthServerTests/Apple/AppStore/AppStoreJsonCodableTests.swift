@@ -7,7 +7,7 @@ final class AppStoreJsonCodableTests: XCTestCase {
   func testSignedPayload() throws {
     let fixture = """
     {
-      "signedPayload": "asdf.1234.0000"
+      "signedPayload": "YXNkZg==.MTIzNA==.MDAwMA=="
     }
     """.data(using: .utf8)!
     

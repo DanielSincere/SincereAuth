@@ -19,9 +19,10 @@ struct AppStoreResponseBodyV2: Content {
         throw IncorrectNumberOfPeriodsError()
       }
       self.rawValue = rawValue
-      self.header = String(splits[0])
-      self.payload = String(splits[1])
-      self.signature = String(splits[2])
+      
+      self.header = String(data: Data(base64Encoded: String(splits[0]))!, encoding: .utf8)!
+      self.payload = String(data: Data(base64Encoded: String(splits[1]))!, encoding: .utf8)!
+      self.signature = String(data: Data(base64Encoded: String(splits[2]))!, encoding: .utf8)!
     }
     
     func encode(to encoder: any Encoder) throws {
