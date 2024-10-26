@@ -1,0 +1,107 @@
+name: Docker
+
+on:
+  push:
+    branches: "**"
+    pull_request:
+    tags:
+      - "**"
+
+jobs:
+  build-docker:
+    name: Build with Docker
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: ${{ github.repository }}
+
+    steps:
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v3
+
+      - name: Docker metadata - scheduled queues
+        id: meta-scheduled-queues
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-scheduled-queues
+          tags: |
+            type=ref,event=tag
+            type=sha,format=long
+            type=semver,pattern={{version}}
+
+      - name: Docker metadata - queues
+        id: meta-queues
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-queues
+          tags: |
+            type=ref,event=tag
+            type=sha,format=long
+            type=semver,pattern={{version}}
+
+      - name: Docker metadata - release
+        id: meta-release
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-release
+          tags: |
+            type=ref,event=tag
+            type=sha,format=long
+            type=semver,pattern={{version}}
+
+      - name: Docker metadata - web
+        id: meta-web
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=tag
+            type=sha,format=long
+            type=semver,pattern={{version}}
+
+      - name: Build and push Docker image - web
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          target: web
+          tags: ${{ steps.meta-web.outputs.tags }}
+          labels: ${{ steps.meta-web.outputs.labels }}
+
+      - name: Build and push Docker image - release
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          target: release
+          tags: ${{ steps.meta-release.outputs.tags }}
+          labels: ${{ steps.meta-release.outputs.labels }}
+
+      - name: Build and push Docker image - queues
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          target: queues
+          tags: ${{ steps.meta-queues.outputs.tags }}
+          labels: ${{ steps.meta-queues.outputs.labels }}
+
+      - name: Build and push Docker image - scheduled queues
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          target: scheduled-queues
+          tags: ${{ steps.meta-scheduled-queues.outputs.tags }}
+          labels: ${{ steps.meta-scheduled-queues.outputs.labels }}

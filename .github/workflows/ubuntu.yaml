@@ -1,0 +1,57 @@
+name: Ubuntu
+
+on:
+  push:
+    branches: "**"
+    pull_request:
+    tags:
+      - "**"
+
+jobs:
+  test-ubuntu:
+    name: Test on Ubuntu, Swift ${{ matrix.swift-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - swift-version: "5.9"
+          - swift-version: "5.10"
+    services:
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost/postgres"
+      DB_SYMMETRIC_KEY: "9/Vk5Rlzctc5tyX0SCmIJaRzEg+QgwWjlTzD0LMPqNY="
+      REDIS_URL: "redis://localhost"
+      SELF_ISSUER_ID: "com.fullqueuedeveloper.FQAuth"
+      APPLE_SERVICES_KEY: "LS0tLS1CRUdJTiBFQyBQQVJBTUVURVJTLS0tLS0KQmdVcmdRUUFJdz09Ci0tLS0tRU5EIEVDIFBBUkFNRVRFUlMtLS0tLQotLS0tLUJFR0lOIEVDIFBSSVZBVEUgS0VZLS0tLS0KTUlIY0FnRUJCRUlCdXRBYnNFUjY1bVFnby9iKzJYcTVsaDZQTDhuRTJSRjZ0WjFDdWNmdW5UaWtyNDFwL3JhZwpYaXd6MTJVOWxoY211Y2wrWDh5MkVacUowQ0FXS0VhTHluYWdCd1lGSzRFRUFDT2hnWWtEZ1lZQUJBQm92SWc2CkNRREdkcjMxNlR6bEJXRG56SHIvWDVoSnVzbnpSY0E2WUpUS1RVMll2bXdCaHVGUFBiNit1MUttaUdkTnQ2N1EKTU16RjMxYjY0L0gwS3prQ1BnRVZicklMVkthNDlUbTdNQU1WT3dsUUxaVHBIck8xMVk2bVd5eERydEFCSXNDTApqNnBRMFhGNlZiNWNOT3RWL1BpMC9lcTIxY3UwV3h5aDNHODY2TlQ0T1E9PQotLS0tLUVORCBFQyBQUklWQVRFIEtFWS0tLS0tCg=="
+      APPLE_SERVICES_KEY_ID: "com.fullqueuedeveloper.FQAuthServer.AppleServicesKeyID"
+      APPLE_TEAM_ID: "FQDV1234"
+      APPLE_APP_ID: "com.fullqueuedeveloper.FQAuth"
+      AUTH_PRIVATE_KEY: "LS0tLS1CRUdJTiBFQyBQQVJBTUVURVJTLS0tLS0KQmdVcmdRUUFJdz09Ci0tLS0tRU5EIEVDIFBBUkFNRVRFUlMtLS0tLQotLS0tLUJFR0lOIEVDIFBSSVZBVEUgS0VZLS0tLS0KTUlIY0FnRUJCRUlCV1Q2RVFQZkRNelNwME1tNjFlbFRaaXljQSs5Sy9QRzN6TFFka0hsMnFlWnlCWEs4VlRrRQpTbGovemxXRkhUWG1RTTB0d3V5YnAyTEFMaHVwd2ZJR3l5eWdCd1lGSzRFRUFDT2hnWWtEZ1lZQUJBRXh5QS9wCitEM05CTmdjMm1XUjdBOVRUa0tkdWMrWVlaeFN2ZWdPMWpMeC9QbG1TUHdHcGF3c2NiYWxHYTgwbkRTNTU2SXUKR1l0S2ZnbkJGSXBFcU1FQkdBQ2MrUys2cTNBNU10emM4bHhzamRlYVlSWDdIbnJNejlVdzRROGNUUmkzUXVJNwpKdi93OEJnZFhRNnVMdGdSMTZLTzJQcVg2azRSSDdmY3BSL20vUEU1OEE9PQotLS0tLUVORCBFQyBQUklWQVRFIEtFWS0tLS0tCg=="
+      WEBSITE_URL: localhost
+      WEBSITE_APPLE_APP_ID: com.fullqueuedeveloper.Web
+    steps:
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: ${{ matrix.swift-version }}
+      - run: swift --version
+      - uses: actions/checkout@v3
+      - run: swift run SincereAuthServer migrate -y --env test
+      - run: swift test
