@@ -1,28 +1,36 @@
 import Vapor
 import JWT
+import Foundation
 
 struct AppStoreResponseBodyV2: Content {
-  let signedPayload: String
+  let signedPayload: SignedPayload
   
-  struct SignedPayload: RawRepresentable {
-    let rawValue: String
+  struct SignedPayload: Codable {
     let header: String
     let payload: String
     let signature: String
+    let rawValue: String
     
-    init?(rawValue: String) {
-      
+    init(from decoder: any Decoder) throws {
+      let container = try decoder.singleValueContainer()
+      let rawValue = try container.decode(String.self)
       let splits = rawValue.split(separator: ".")
       guard splits.count == 3 else {
-        return nil
+        throw IncorrectNumberOfPeriodsError()
       }
-      
+      self.rawValue = rawValue
       self.header = String(splits[0])
       self.payload = String(splits[1])
       self.signature = String(splits[2])
-      self.rawValue = rawValue
+    }
+    
+    func encode(to encoder: any Encoder) throws {
+      var container = encoder.singleValueContainer()
+      try container.encode(self.rawValue)
+    }
+    
+    struct IncorrectNumberOfPeriodsError: LocalizedError {
+      var errorDescription: String? = "Expected three fields delimited by two periods."
     }
   }
 }
-
-
