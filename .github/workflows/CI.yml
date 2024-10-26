@@ -107,19 +107,29 @@ jobs:
           labels: ${{ steps.meta-scheduled-queues.outputs.labels }}
 
   build-mac:
-    name: Build on Mac
+    name: Build on Mac, Swift ${{ matrix.swift-version }}
     runs-on: macos-13
+    strategy:
+      matrix:
+        include:
+          - swift-version: "5.9"
+          - swift-version: "5.10"
     steps:
       - uses: swift-actions/setup-swift@v1
         with:
-          swift-version: "5.9"
+          swift-version: ${{ matrix.swift-version }}
       - run: swift --version
       - uses: actions/checkout@v3
       - run: swift build -c release
 
   test-linux:
-    name: Test on Ubuntu
+    name: Test on Ubuntu, Swift ${{ matrix.swift-version }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - swift-version: "5.9"
+          - swift-version: "5.10"
     services:
       redis:
         image: redis:latest
@@ -154,15 +164,21 @@ jobs:
     steps:
       - uses: swift-actions/setup-swift@v1
         with:
-          swift-version: 5.9
+          swift-version: ${{ matrix.swift-version }}
       - run: swift --version
       - uses: actions/checkout@v3
       - run: swift run SincereAuthServer migrate -y --env test
       - run: swift test
 
   test-mac:
-    name: Test on Mac
+    name: Test on Mac, Swift ${{ matrix.swift-version }}
     runs-on: macos-13
+    strategy:
+      matrix:
+        include:
+          - swift-version: "5.9"
+          - swift-version: "5.10"
+
     steps:
       - run: |
           brew install postgresql
@@ -191,7 +207,7 @@ jobs:
 
       - uses: swift-actions/setup-swift@v1
         with:
-          swift-version: "5.9"
+          swift-version: ${{ matrix.swift-version }}
       - run: swift --version
       - uses: shogo82148/actions-setup-redis@v1
       - uses: actions/checkout@v3
