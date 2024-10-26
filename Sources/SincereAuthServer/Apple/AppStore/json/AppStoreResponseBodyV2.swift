@@ -9,7 +9,6 @@ struct AppStoreResponseBodyV2: Content {
     let header: String
     let payload: String
     let signature: String
-    let rawValue: String
     
     init(from decoder: any Decoder) throws {
       let container = try decoder.singleValueContainer()
@@ -18,7 +17,6 @@ struct AppStoreResponseBodyV2: Content {
       guard splits.count == 3 else {
         throw IncorrectNumberOfPeriodsError()
       }
-      self.rawValue = rawValue
       
       self.header = String(data: Data(base64Encoded: String(splits[0]))!, encoding: .utf8)!
       self.payload = String(data: Data(base64Encoded: String(splits[1]))!, encoding: .utf8)!
@@ -27,7 +25,8 @@ struct AppStoreResponseBodyV2: Content {
     
     func encode(to encoder: any Encoder) throws {
       var container = encoder.singleValueContainer()
-      try container.encode(self.rawValue)
+      let rawValue = "\(self.header.base64String()).\(self.payload.base64String()).\(self.signature.base64String())"
+      try container.encode(rawValue)
     }
     
     struct IncorrectNumberOfPeriodsError: LocalizedError {
