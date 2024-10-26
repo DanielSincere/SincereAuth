@@ -115,7 +115,7 @@ jobs:
           - swift-version: "5.9"
           - swift-version: "5.10"
     steps:
-      - uses: swift-actions/setup-swift@v1
+      - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift-version }}
       - run: swift --version
@@ -162,7 +162,7 @@ jobs:
       WEBSITE_URL: localhost
       WEBSITE_APPLE_APP_ID: com.fullqueuedeveloper.Web
     steps:
-      - uses: swift-actions/setup-swift@v1
+      - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift-version }}
       - run: swift --version
@@ -205,7 +205,7 @@ jobs:
 
       - run: psql $DATABASE_URL -c "select version()"
 
-      - uses: swift-actions/setup-swift@v1
+      - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift-version }}
       - run: swift --version
