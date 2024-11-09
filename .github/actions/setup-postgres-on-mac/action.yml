@@ -1,9 +1,14 @@
 name: 'Setup Postgres on Mac'
 description: 'Setup Postgres on Mac'
-inputs:
-  database-url:  # id of input
-    description: 'URL of the database to creat'
-    required: true
+
+outputs:
+  database-url:
+    description: "Connection URL of database that was created"
+    value: ${{ env.DATABASE_URL }}
+
+env:
+  DATABASE_URL: "postgresql://myuser:mypassword@localhost/mydatabase"
+
 runs:
   using: "composite"
   steps:
@@ -37,5 +42,3 @@ runs:
 
   - shell: bash
     run: psql $DATABASE_URL -c "select version()"
-    env:
-      DATABASE_URL: ${{ inputs.database-url }}

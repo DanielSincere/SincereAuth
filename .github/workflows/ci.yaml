@@ -17,15 +17,14 @@ jobs:
         action: ["build", "test"]
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-postgres-on-mac
-        with:
-          database-url: "postgresql://myuser:mypassword@localhost/mydatabase"
+      - id: setup-postgres
+        uses: ./.github/actions/setup-postgres-on-mac
       - uses: shogo82148/actions-setup-redis@v1
       - uses: ./.github/actions/sincere-auth-build-action
         with:
           swift-version: ${{ matrix.swift-version }}
           action: ${{ matrix.action }}
-          database-url: "postgresql://myuser:mypassword@localhost/mydatabase"
+          database-url: ${{ steps.setup-postgres.outputs.database-url }}
 
   ubuntu:
     name: Ubuntu ${{ matrix.action }}, Swift ${{ matrix.swift-version }}
