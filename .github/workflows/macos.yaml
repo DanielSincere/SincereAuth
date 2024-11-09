@@ -21,7 +21,7 @@ jobs:
         with:
           swift-version: ${{ matrix.swift-version }}
       - run: swift --version
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: swift build -c release
 
   test-mac:
@@ -34,6 +34,7 @@ jobs:
           - swift-version: "5.10"
 
     steps:
+      - uses: actions/checkout@v4
 #       - run: |
 #           brew install postgresql
 #           brew services start postgresql
@@ -68,7 +69,6 @@ jobs:
           swift-version: ${{ matrix.swift-version }}
       - run: swift --version
       - uses: shogo82148/actions-setup-redis@v1
-      - uses: actions/checkout@v3
       - run: swift run SincereAuthServer migrate -y --env test
       - run: swift test
     env:
