@@ -59,7 +59,7 @@ jobs:
 #
 #       - run: psql $DATABASE_URL -c "select version()"
 
-      - uses: .github/actions/setup-postgres-on-mac
+      - uses: .github/actions/setup-postgres-on-mac/action.yml
         with:
           database-url: ${{ DATABASE_URL }}
 
