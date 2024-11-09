@@ -4,10 +4,7 @@ description: 'Setup Postgres on Mac'
 outputs:
   database-url:
     description: "Connection URL of database that was created"
-    value: ${{ env.DATABASE_URL }}
-
-env:
-  DATABASE_URL: "postgresql://myuser:mypassword@localhost/mydatabase"
+    value: ${{ steps.set-database-url.outputs.database-url }}
 
 runs:
   using: "composite"
@@ -40,7 +37,11 @@ runs:
       createdb --owner=myuser mydatabase
       PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
 
+  - id: set-database-url
+    shell: bash
+    run: echo "database-url=postgresql://myuser:mypassword@localhost/mydatabase" >> $GITHUB_OUTPUT
+
   - shell: bash
     run: psql $DATABASE_URL -c "select version()"
     env:
-      DATABASE_URL: ${{ env.DATABASE_URL }}
+      DATABASE_URL: ${{ steps.set-database-url.outputs.database-url }}
