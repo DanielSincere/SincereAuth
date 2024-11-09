@@ -17,11 +17,11 @@ jobs:
           - swift-version: "5.9"
           - swift-version: "5.10"
     steps:
+      - uses: actions/checkout@v4
       - uses: SwiftyLab/setup-swift@latest
         with:
           swift-version: ${{ matrix.swift-version }}
       - run: swift --version
-      - uses: actions/checkout@v4
       - run: swift build -c release
 
   test-mac:
