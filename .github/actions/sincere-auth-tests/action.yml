@@ -1,0 +1,16 @@
+name: 'Tests'
+inputs:
+  swift-version:  # id of input
+    description: 'Version of Swift to build with'
+    required: true
+    default: '5.9'
+
+runs:
+    using: "composite"
+    steps:
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          swift-version: ${{ matrix.swift-version }}
+      - run: swift --version
+      - run: swift run SincereAuthServer migrate -y --env test
+      - run: swift test
