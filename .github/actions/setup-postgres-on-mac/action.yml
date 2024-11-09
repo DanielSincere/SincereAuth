@@ -4,30 +4,32 @@ inputs:
   database-url:  # id of input
     description: 'URL of the database to creat'
     required: true
-steps:
-- run: |
-    brew install postgresql
-    brew services start postgresql
-    echo "Check PostgreSQL service is running"
-    i=10
-    COMMAND='pg_isready'
-    while [ $i -gt 0 ]; do
-      echo "Check PostgreSQL service status"
-      eval $COMMAND && break
-      ((i--))
-      if [ $i == 0 ]; then
-        echo "PostgreSQL service not ready, all attempts exhausted"
-        exit 1
-      fi
-      echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
-      sleep 10
-    done
-- run: |
-    psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
-- run: |
-    createdb --owner=myuser mydatabase
-    PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
+runs:
+  using: "composite"
+  steps:
+  - run: |
+      brew install postgresql
+      brew services start postgresql
+      echo "Check PostgreSQL service is running"
+      i=10
+      COMMAND='pg_isready'
+      while [ $i -gt 0 ]; do
+        echo "Check PostgreSQL service status"
+        eval $COMMAND && break
+        ((i--))
+        if [ $i == 0 ]; then
+          echo "PostgreSQL service not ready, all attempts exhausted"
+          exit 1
+        fi
+        echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
+        sleep 10
+      done
+  - run: |
+      psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
+  - run: |
+      createdb --owner=myuser mydatabase
+      PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
 
-- run: psql $DATABASE_URL -c "select version()"
-  env:
-    DATABASE_URL:  ${{ inputs.database-url }}
+  - run: psql $DATABASE_URL -c "select version()"
+    env:
+      DATABASE_URL: ${{ inputs.database-url }}
