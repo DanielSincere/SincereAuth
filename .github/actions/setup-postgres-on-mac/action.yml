@@ -42,3 +42,5 @@ runs:
 
   - shell: bash
     run: psql $DATABASE_URL -c "select version()"
+    env:
+      DATABASE_URL: ${{ env.DATABASE_URL }}
