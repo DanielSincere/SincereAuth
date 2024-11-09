@@ -29,3 +29,5 @@ steps:
     PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
 
 - run: psql $DATABASE_URL -c "select version()"
+  env:
+    DATABASE_URL:  ${{ inputs.database-url }}
