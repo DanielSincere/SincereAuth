@@ -7,7 +7,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - run: |
+  - shell: bash
+    run: |
       brew install postgresql
       brew services start postgresql
       echo "Check PostgreSQL service is running"
@@ -24,12 +25,17 @@ runs:
         echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
         sleep 10
       done
-  - run: |
+
+  - shell: bash
+    run: |
       psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
-  - run: |
+
+  - shell: bash
+    run: |
       createdb --owner=myuser mydatabase
       PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
 
-  - run: psql $DATABASE_URL -c "select version()"
+  - shell: bash
+    run: psql $DATABASE_URL -c "select version()"
     env:
       DATABASE_URL: ${{ inputs.database-url }}
