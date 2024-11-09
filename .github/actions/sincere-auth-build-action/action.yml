@@ -12,20 +12,20 @@ inputs:
     required: true
 
 runs:
-    using: "composite"
-    steps:
-      - uses: SwiftyLab/setup-swift@latest
-        with:
-          swift-version: ${{ inputs.swift-version }}
-      - shell: bash
-        run: swift --version
+  using: "composite"
+  steps:
+    - uses: SwiftyLab/setup-swift@latest
+      with:
+        swift-version: ${{ inputs.swift-version }}
+    - shell: bash
+      run: swift --version
 
-      - if: ${{ inputs.action == 'test' }}
-        shell: bash
-        run: |
-          swift run SincereAuthServer migrate -y --env test && swift test
-        env:
-          DATABASE_URL: ${{ inputs.database-url }}
-      - if: ${{ inputs.action == 'build' }}
-        shell: bash
-        run: swift build -c release
+    - if: ${{ inputs.action == 'test' }}
+      shell: bash
+      run: |
+        swift run SincereAuthServer migrate -y --env test && swift test
+      env:
+        DATABASE_URL: ${{ inputs.database-url }}
+    - if: ${{ inputs.action == 'build' }}
+      shell: bash
+      run: swift build -c release

@@ -8,6 +8,18 @@ on:
       - "**"
 
 jobs:
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: ["web", "release", "queues", "scheduled-queues"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/sincere-auth-docker-action
+        with:
+          target: ${{ matrix.target }}
+
   mac:
     name: Mac ${{ matrix.action }}, Swift ${{ matrix.swift-version }}
     runs-on: macos-latest
