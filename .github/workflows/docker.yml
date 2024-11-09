@@ -1,12 +1,5 @@
 name: Docker
 
-on:
-  push:
-    branches: "**"
-    pull_request:
-    tags:
-      - "**"
-
 jobs:
   build-docker:
     name: Build with Docker

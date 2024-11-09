@@ -8,48 +8,32 @@ on:
       - "**"
 
 jobs:
-  build-mac:
-    name: Build on Mac, Swift ${{ matrix.swift-version }}
+  mac:
+    name: Mac ${{ matrix.action }}, Swift ${{ matrix.swift-version }}
     runs-on: macos-latest
     strategy:
       matrix:
-        include:
-          - swift-version: "5.9"
-          - swift-version: "5.10"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: SwiftyLab/setup-swift@latest
-        with:
-          swift-version: ${{ matrix.swift-version }}
-      - run: swift --version
-      - run: swift build -c release
-
-  test-mac:
-    name: Test on Mac, Swift ${{ matrix.swift-version }}
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        include:
-          - swift-version: "5.9"
-          - swift-version: "5.10"
+        swift-version: ["5.9", "5.10"]
+        action: ["build", "test"]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-postgres-on-mac
         with:
           database-url: "postgresql://myuser:mypassword@localhost/mydatabase"
       - uses: shogo82148/actions-setup-redis@v1
-      - uses: ./.github/actions/sincere-auth-tests
-        env:
-          DATABASE_URL: "postgresql://myuser:mypassword@localhost/mydatabase"
+      - uses: ./.github/actions/sincere-auth-build-action
+        with:
+          swift-version: ${{ matrix.swift-version }}
+          action: ${{ matrix.action }}
+          database-url: "postgresql://myuser:mypassword@localhost/mydatabase"
 
-  test-ubuntu:
-    name: Test on Ubuntu, Swift ${{ matrix.swift-version }}
+  ubuntu:
+    name: Ubuntu ${{ matrix.action }}, Swift ${{ matrix.swift-version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - swift-version: "5.9"
-          - swift-version: "5.10"
+        swift-version: ["5.9", "5.10"]
+        action: ["build", "test"]
     services:
       redis:
         image: redis:latest
@@ -66,9 +50,12 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v4
-    - uses: ./.github/actions/sincere-auth-tests
-      env:
-        DATABASE_URL: "postgresql://postgres:postgres@localhost/postgres"
+    - uses: ./.github/actions/sincere-auth-build-action
+      with:
+        swift-version: ${{ matrix.swift-version }}
+        action: ${{ matrix.action }}
+        database-url: "postgresql://postgres:postgres@localhost/postgres"
+
 env:
   DB_SYMMETRIC_KEY: "9/Vk5Rlzctc5tyX0SCmIJaRzEg+QgwWjlTzD0LMPqNY="
   REDIS_URL: "redis://127.0.0.1:6379"
