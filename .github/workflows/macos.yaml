@@ -61,7 +61,7 @@ jobs:
 
       - uses: ./.github/actions/setup-postgres-on-mac/action.yml
         with:
-          database-url: ${{ DATABASE_URL }}
+          database-url: ${{ env.DATABASE_URL }}
 
       - uses: SwiftyLab/setup-swift@latest
         with:
