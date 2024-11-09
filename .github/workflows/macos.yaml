@@ -34,30 +34,34 @@ jobs:
           - swift-version: "5.10"
 
     steps:
-      - run: |
-          brew install postgresql
-          brew services start postgresql
-          echo "Check PostgreSQL service is running"
-          i=10
-          COMMAND='pg_isready'
-          while [ $i -gt 0 ]; do
-            echo "Check PostgreSQL service status"
-            eval $COMMAND && break
-            ((i--))
-            if [ $i == 0 ]; then
-              echo "PostgreSQL service not ready, all attempts exhausted"
-              exit 1
-            fi
-            echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
-            sleep 10
-          done
-      - run: |
-          psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
-      - run: |
-          createdb --owner=myuser mydatabase
-          PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
+#       - run: |
+#           brew install postgresql
+#           brew services start postgresql
+#           echo "Check PostgreSQL service is running"
+#           i=10
+#           COMMAND='pg_isready'
+#           while [ $i -gt 0 ]; do
+#             echo "Check PostgreSQL service status"
+#             eval $COMMAND && break
+#             ((i--))
+#             if [ $i == 0 ]; then
+#               echo "PostgreSQL service not ready, all attempts exhausted"
+#               exit 1
+#             fi
+#             echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
+#             sleep 10
+#           done
+#       - run: |
+#           psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
+#       - run: |
+#           createdb --owner=myuser mydatabase
+#           PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
+#
+#       - run: psql $DATABASE_URL -c "select version()"
 
-      - run: psql $DATABASE_URL -c "select version()"
+      - uses: .github/actions/setup-postgres-on-mac
+        with:
+          database-url: ${{ DATABASE_URL }}
 
       - uses: SwiftyLab/setup-swift@latest
         with:
