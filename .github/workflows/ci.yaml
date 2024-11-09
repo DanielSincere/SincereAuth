@@ -16,6 +16,12 @@ jobs:
         target: ["web", "release", "queues", "scheduled-queues"]
     steps:
       - uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ github.repository }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: ./.github/actions/sincere-auth-docker-action
         with:
           target: ${{ matrix.target }}
