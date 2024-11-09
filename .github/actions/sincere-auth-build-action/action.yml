@@ -1,0 +1,31 @@
+name: 'Sincere Auth Build Action'
+description: "Separate action to either build or test Sincere Auth"
+inputs:
+  swift-version:
+    description: 'Version of Swift to build with'
+    required: true
+  action:
+    description: Build for release or run tests. Options are 'build' or 'test'
+    required: true
+  database-url:
+    description: Database URL to use during tests
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: SwiftyLab/setup-swift@latest
+      with:
+        swift-version: ${{ inputs.swift-version }}
+    - shell: bash
+      run: swift --version
+
+    - if: ${{ inputs.action == 'test' }}
+      shell: bash
+      run: |
+        swift run SincereAuthServer migrate -y --env test && swift test
+      env:
+        DATABASE_URL: ${{ inputs.database-url }}
+    - if: ${{ inputs.action == 'build' }}
+      shell: bash
+      run: swift build -c release

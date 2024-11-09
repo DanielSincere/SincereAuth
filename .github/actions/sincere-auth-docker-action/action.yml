@@ -1,0 +1,29 @@
+name: "Sincere Auth Docker Action"
+description: "Build & push a docker image"
+inputs:
+  target:
+    description: "The Dockerfile target to build and push"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Docker metadata - ${{ inputs.target }}
+    id: docker-metadata
+    uses: docker/metadata-action@v4
+    with:
+      images: |
+        ghcr.io/${{ github.repository }}-${{ inputs.target }}
+      tags: |
+        type=ref,event=tag
+        type=sha,format=long
+        type=semver,pattern={{version}}
+
+  - name: Build and push Docker image - ${{ inputs.target }}
+    uses: docker/build-push-action@v6
+    with:
+      context: .
+      push: true
+      target: ${{ inputs.target }}
+      tags: ${{ steps.docker-metadata.outputs.tags }}
+      labels: ${{ steps.docker-metadata.outputs.labels }}

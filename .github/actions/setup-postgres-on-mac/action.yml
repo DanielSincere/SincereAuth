@@ -1,0 +1,47 @@
+name: 'Setup Postgres on Mac'
+description: 'Setup Postgres on Mac'
+
+outputs:
+  database-url:
+    description: "Connection URL of database that was created"
+    value: ${{ steps.set-database-url.outputs.database-url }}
+
+runs:
+  using: "composite"
+  steps:
+  - shell: bash
+    run: |
+      brew install postgresql
+      brew services start postgresql
+      echo "Check PostgreSQL service is running"
+      i=10
+      COMMAND='pg_isready'
+      while [ $i -gt 0 ]; do
+        echo "Check PostgreSQL service status"
+        eval $COMMAND && break
+        ((i--))
+        if [ $i == 0 ]; then
+          echo "PostgreSQL service not ready, all attempts exhausted"
+          exit 1
+        fi
+        echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
+        sleep 10
+      done
+
+  - shell: bash
+    run: |
+      psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
+
+  - shell: bash
+    run: |
+      createdb --owner=myuser mydatabase
+      PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
+
+  - id: set-database-url
+    shell: bash
+    run: echo "database-url=postgresql://myuser:mypassword@localhost/mydatabase" >> $GITHUB_OUTPUT
+
+  - shell: bash
+    run: psql $DATABASE_URL -c "select version()"
+    env:
+      DATABASE_URL: ${{ steps.set-database-url.outputs.database-url }}
