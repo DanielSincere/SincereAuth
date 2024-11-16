@@ -1,0 +1,14 @@
+#extend("base"):
+#export("base_title"): Sincere Auth #endexport
+#export("base_head"):
+
+#endexport
+
+#export("base_body"):
+<h1>Welcome to Sincere Auth</H1>
+
+
+<a href="/login">Sign in</a>
+
+#endexport
+#endextend

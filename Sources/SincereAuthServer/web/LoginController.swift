@@ -13,7 +13,8 @@ final class LoginController {
                           appleidSigninScope: "code id_token name email",
                           appleidSigninRedirectUri: redirect.absoluteString,
                           appleidSigninState: "state",
-                          appleidSigninNonce: "nonce")
+                          appleidSigninNonce: "nonce",
+                          isDev: req.application.environment == Environment.development)
     return try await req.view.render("Login/login", login)
   }
 
@@ -23,10 +24,18 @@ final class LoginController {
     let appleidSigninRedirectUri: String
     let appleidSigninState: String
     let appleidSigninNonce: String
+    let isDev: Bool
   }
   
   func siwaRedirect(req: Request) async throws -> String {
     return "redirect"
+  }
+  
+  func devLogin(req: Request) async throws -> String {
+    guard req.application.environment == Environment.development else {
+      throw Abort(.unauthorized)
+    }
+    return "dev login"
   }
 }
 
@@ -34,6 +43,8 @@ extension LoginController: RouteCollection {
 
   func boot(routes: RoutesBuilder) throws {
     routes.get("login", use: self.login(req:))
+    
+    routes.get("login", "dev", use: devLogin)
     
     // /redirect/siwa
     routes.group("redirect") { redirect in

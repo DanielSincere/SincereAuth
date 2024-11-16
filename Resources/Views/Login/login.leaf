@@ -1,18 +1,32 @@
 #extend("base"):
-#export("base_title"): List users #endexport
+#export("base_title"): Login #endexport
 #export("base_head"):
-  <meta name="appleid-signin-client-id" content="[CLIENT_ID]">
-  <meta name="appleid-signin-scope" content="[SCOPES]">
-  <meta name="appleid-signin-redirect-uri" content="[REDIRECT_URI]">
-  <meta name="appleid-signin-state" content="[STATE]">
-  <meta name="appleid-signin-nonce" content="[NONCE]">
+  <meta name="appleid-signin-client-id" content="#(appleidSigninClientId)">
+  <meta name="appleid-signin-scope" content="#(appleidSigninScope)">
+  <meta name="appleid-signin-redirect-uri" content="#(appleidSigninRedirectUri)">
+  <meta name="appleid-signin-state" content="#(appleidSigninState)">
+  <meta name="appleid-signin-nonce" content="#(appleidSigninNonce)">
   <meta name="appleid-signin-use-popup" content="true">
+  <style>
+    #appleid-signin {
+      width: 240px;
+      height: 40px;
+    }
+  </style>
 #endexport
 
 #export("base_body"):
 
-<div id="appleid-signin" data-color="black" data-border="true" data-type="sign in"></div>
+
+<h1 class="text-3xl font-bold">Sign in to Sincere Auth</H1>
 <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+<div id="appleid-signin" data-color="black" data-border="true" data-type="sign-in"></div>
+
+#if(isDev):
+<a href="/login/dev">Dev login</a>
+#endif
+
+
 #endexport
 
 #endextend

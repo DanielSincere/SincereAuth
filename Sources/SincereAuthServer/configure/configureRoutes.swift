@@ -8,6 +8,10 @@ extension Application {
     self.get("healthy") { req in
       return "healthy"
     }
+      
+    self.get("") { req in
+      req.view.render("home")
+    }
 
     let apiRoutes = self.grouped("api")
     try apiRoutes.register(collection: JWKSController())

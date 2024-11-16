@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <title>#import("base_title")</title>
 
   #import("base_head")
 </head>
 <body>
 
-  <main class="container">
+  <nav class="container mx-auto h-20 bg-violet-400"> </nav>
+  <main class="container mx-auto">
     #import("base_body")
   </main>
   
