@@ -1,6 +1,6 @@
 import Vapor
 
-final class LoginController {
+final class LoginWebController {
 
   func login(req: Request) async throws -> View {
     guard let redirect = URL(string: "login/redirect", relativeTo: URL(string: EnvVars.websiteURL.loadOrFatal())) else {
@@ -30,21 +30,14 @@ final class LoginController {
   func siwaRedirect(req: Request) async throws -> String {
     return "redirect"
   }
-  
-  func devLogin(req: Request) async throws -> String {
-    guard req.application.environment == Environment.development else {
-      throw Abort(.unauthorized)
-    }
-    return "dev login"
-  }
 }
 
-extension LoginController: RouteCollection {
+extension LoginWebController: RouteCollection {
 
   func boot(routes: RoutesBuilder) throws {
     routes.get("login", use: self.login(req:))
     
-    routes.get("login", "dev", use: devLogin)
+    routes.post("login", "dev", use: self.devLogin(request:))
     
     // /redirect/siwa
     routes.group("redirect") { redirect in

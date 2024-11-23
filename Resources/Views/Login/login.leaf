@@ -23,7 +23,13 @@
 <div id="appleid-signin" data-color="black" data-border="true" data-type="sign-in"></div>
 
 #if(isDev):
-<a href="/login/dev">Dev login</a>
+<form method="POST" action="/login/dev">
+<label for="firstName">First name</label><br/>
+<input name="firstName" class="rounded"/><br/>
+<label for="lastName">Last name</label><br/>
+<input name="lastName" class="rounded"/><br/>
+<input type="submit" title="Signup/login" class="rounded bg-neutral-200 px-4 py-2"/>
+</form>
 #endif
 
 

@@ -3,7 +3,11 @@ import FluentPostgresDriver
 import Foundation
 import Vapor
 
-final class UserModel: Model {
+final class UserModel: Model, SessionAuthenticatable {
+  var sessionID: UUID {
+    try! self.requireID()
+  }
+  
   static let schema = "user"
 
   @ID(key: .id) var id: UUID?
@@ -37,6 +41,7 @@ final class UserModel: Model {
 
   enum RegistrationMethod: String, Codable, CaseIterable {
     case siwa
+    case dev
   }
 
   enum Status: String, Codable {

@@ -11,6 +11,7 @@ extension Application {
                           CreateRefreshTokenMigration(),
                           AddRolesToUserMigration(),
                           AddAppIdToSiwaMigration(),
+                          AddDevUserRegistrationMigration(),
                           to: .psql)
     
     if Environment.get("RUN_AUTO_MIGRATE") == "YES" {

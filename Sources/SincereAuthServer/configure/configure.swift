@@ -8,6 +8,7 @@ extension Application {
     try self.configureMigrations()
     try self.configureRedis()
     try self.configureQueues()
+    self.configureWebSessions()
     try self.configureRoutes()
 
     try self.configureSigning()
@@ -17,5 +18,6 @@ extension Application {
     self.configureServices()
 
     self.views.use(.leaf)
+  
   }
 }
